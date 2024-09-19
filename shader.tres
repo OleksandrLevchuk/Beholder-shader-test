@@ -1,0 +1,31 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://bfxrdwaeb64lw"]
+
+[ext_resource type="Texture2D" uid="uid://cfuqr3i7d7yro" path="res://gradient.png" id="1_10ufl"]
+
+[sub_resource type="Shader" id="Shader_cctf5"]
+code = "shader_type canvas_item;
+
+uniform sampler2D gradient;
+uniform bool is_active = true;
+uniform bool repeat = true;
+uniform float multiplier = 1.0;
+uniform float offset = 0.0;
+
+void fragment(){
+	vec4 input_color = texture(TEXTURE, UV);
+	float greyscale_value = input_color.r * multiplier + offset;
+	if ( repeat ) {
+		greyscale_value = mod( greyscale_value, 1 );
+	}
+	if ( is_active ) {
+		COLOR.rgb = texture(gradient, vec2(greyscale_value, 0.0)).rgb;
+	}
+}"
+
+[resource]
+shader = SubResource("Shader_cctf5")
+shader_parameter/is_active = true
+shader_parameter/repeat = true
+shader_parameter/multiplier = 1.0
+shader_parameter/offset = 0.0
+shader_parameter/gradient = ExtResource("1_10ufl")

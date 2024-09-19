@@ -1,0 +1,138 @@
+[gd_scene load_steps=5 format=3 uid="uid://bj5217mok1mhf"]
+
+[ext_resource type="Material" uid="uid://bfxrdwaeb64lw" path="res://shader.tres" id="1_g8e1x"]
+[ext_resource type="Texture2D" uid="uid://xylw3pgin21o" path="res://beholder double.png" id="1_xhtpo"]
+[ext_resource type="Texture2D" uid="uid://bd8cosse7ymbh" path="res://gradient bw.png" id="2_7by4m"]
+
+[sub_resource type="GDScript" id="GDScript_nuvoq"]
+script/source = "extends Node2D
+@onready var mat := preload(\"res://shader.tres\")
+@onready var mult := $SliderMultiplier
+@onready var mult_label := $SliderMultiplier/LabelValue
+@onready var offset := $SliderOffset
+@onready var offset_label := $SliderOffset/LabelValue
+
+
+func _process(_delta):
+	mat.set_shader_parameter(\"multiplier\", mult.value)
+	mult_label.text = str( mult.value )
+	mat.set_shader_parameter(\"offset\", offset.value)
+	offset_label.text = str( offset.value )
+
+
+func reset():
+	mult.value = 1
+	offset.value = 0
+
+
+func _on_check_button_toggled( toggled_on ):
+	mat.set_shader_parameter( \"is_active\", toggled_on )
+
+
+func _on_button_repeat_toggled( toggled_on ):
+	mat.set_shader_parameter( \"repeat\", toggled_on )
+"
+
+[node name="Node2D" type="Node2D"]
+script = SubResource("GDScript_nuvoq")
+
+[node name="BeholderDouble" type="Sprite2D" parent="."]
+material = ExtResource("1_g8e1x")
+position = Vector2(214, 256)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_xhtpo")
+
+[node name="GradientBw" type="Sprite2D" parent="."]
+material = ExtResource("1_g8e1x")
+position = Vector2(593.25, 223)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_7by4m")
+
+[node name="SliderMultiplier" type="HSlider" parent="."]
+offset_left = 126.0
+offset_top = 485.0
+offset_right = 1102.0
+offset_bottom = 501.0
+max_value = 10.0
+step = 0.01
+value = 1.0
+
+[node name="Label" type="Label" parent="SliderMultiplier"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = -31.0
+offset_right = 127.0
+offset_bottom = -8.0
+text = "Multiplier"
+
+[node name="LabelValue" type="Label" parent="SliderMultiplier"]
+layout_mode = 0
+offset_left = 141.0
+offset_top = -31.0
+offset_right = 181.0
+offset_bottom = -8.0
+text = "--"
+
+[node name="SliderOffset" type="HSlider" parent="."]
+offset_left = 128.0
+offset_top = 541.0
+offset_right = 1096.0
+offset_bottom = 557.0
+min_value = -10.0
+max_value = 10.0
+step = 0.01
+
+[node name="Label" type="Label" parent="SliderOffset"]
+layout_mode = 0
+offset_left = 50.0
+offset_top = -27.0
+offset_right = 126.0
+offset_bottom = -4.0
+text = "Offset"
+
+[node name="LabelValue" type="Label" parent="SliderOffset"]
+layout_mode = 0
+offset_left = 107.0
+offset_top = -27.0
+offset_right = 183.0
+offset_bottom = -4.0
+text = "--"
+
+[node name="ButtonReset" type="Button" parent="."]
+offset_left = 397.0
+offset_top = 431.0
+offset_right = 448.0
+offset_bottom = 462.0
+text = "Reset"
+
+[node name="ButtonActivate" type="CheckButton" parent="."]
+offset_left = 441.0
+offset_top = 389.0
+offset_right = 485.0
+offset_bottom = 413.0
+button_pressed = true
+
+[node name="Label" type="Label" parent="ButtonActivate"]
+layout_mode = 0
+offset_left = -64.0
+offset_right = -1.0
+offset_bottom = 23.0
+text = "Activate"
+
+[node name="ButtonRepeat" type="CheckButton" parent="."]
+offset_left = 441.0
+offset_top = 357.0
+offset_right = 485.0
+offset_bottom = 381.0
+button_pressed = true
+
+[node name="Label" type="Label" parent="ButtonRepeat"]
+layout_mode = 0
+offset_left = -64.0
+offset_right = -1.0
+offset_bottom = 23.0
+text = "Repeat"
+
+[connection signal="pressed" from="ButtonReset" to="." method="reset"]
+[connection signal="toggled" from="ButtonActivate" to="." method="_on_check_button_toggled"]
+[connection signal="toggled" from="ButtonRepeat" to="." method="_on_button_repeat_toggled"]
